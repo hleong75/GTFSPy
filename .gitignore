@@ -28,6 +28,9 @@ Thumbs.db
 # Application data
 .gtfspy/
 
+# Sample data
+sample_gtfs.zip
+
 # Temporary files
 /tmp/
 *.tmp
