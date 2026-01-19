@@ -103,25 +103,25 @@ class RoutingEngine:
     def get_connected_stops(self, stop_id):
         """
         Récupère les arrêts connectés à un arrêt donné via des trajets
+        Utilise l'index stop_to_trips pour des performances optimales
         
         Returns:
             Liste de tuples (stop_id, coût)
         """
         connected = []
         
-        # Parcourir tous les trajets passant par cet arrêt
-        for trip_id, stop_times in self.gtfs_manager.stop_times.items():
-            for i, stop_time in enumerate(stop_times):
-                if stop_time.get('stop_id') == stop_id:
-                    # Ajouter l'arrêt suivant dans ce trajet
-                    if i + 1 < len(stop_times):
-                        next_stop_id = stop_times[i + 1].get('stop_id')
-                        # Coût basé sur le temps de trajet
-                        cost = self.calculate_time_cost(
-                            stop_time.get('departure_time'),
-                            stop_times[i + 1].get('arrival_time')
-                        )
-                        connected.append((next_stop_id, cost))
+        # Utiliser l'index pour trouver rapidement les trajets
+        if stop_id in self.gtfs_manager.stop_to_trips_index:
+            for trip_info in self.gtfs_manager.stop_to_trips_index[stop_id]:
+                # Si un arrêt suivant existe
+                if 'next_stop_id' in trip_info:
+                    next_stop_id = trip_info['next_stop_id']
+                    # Coût basé sur le temps de trajet
+                    cost = self.calculate_time_cost(
+                        trip_info['departure_time'],
+                        trip_info['next_arrival_time']
+                    )
+                    connected.append((next_stop_id, cost))
         
         return connected
     

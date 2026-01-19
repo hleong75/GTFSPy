@@ -19,6 +19,7 @@ class GTFSManager:
         self.stop_times = {}
         self.calendar = {}
         self.shapes = {}
+        self.stop_to_trips_index = {}  # Index pour accélérer la recherche de trajets par arrêt
         
     def import_gtfs(self, zip_path):
         """Importe un fichier GTFS depuis un fichier ZIP"""
@@ -78,6 +79,9 @@ class GTFSManager:
         shapes_file = os.path.join(gtfs_dir, 'shapes.txt')
         if os.path.exists(shapes_file):
             self.shapes = self.load_shapes(shapes_file)
+        
+        # Construire l'index stop_id -> trips
+        self.build_stop_to_trips_index()
     
     def load_csv_to_dict(self, file_path, key_field):
         """Charge un fichier CSV GTFS dans un dictionnaire"""
@@ -137,6 +141,32 @@ class GTFSManager:
             print(f"Erreur lors du chargement des shapes: {e}")
         return shapes
     
+    def build_stop_to_trips_index(self):
+        """Construit un index pour accélérer la recherche de trajets par arrêt"""
+        self.stop_to_trips_index = {}
+        
+        for trip_id, stop_time_list in self.stop_times.items():
+            for i, stop_time in enumerate(stop_time_list):
+                stop_id = stop_time.get('stop_id')
+                if stop_id:
+                    if stop_id not in self.stop_to_trips_index:
+                        self.stop_to_trips_index[stop_id] = []
+                    
+                    # Stocker trip_id, position dans le trajet, et l'arrêt suivant s'il existe
+                    trip_info = {
+                        'trip_id': trip_id,
+                        'position': i,
+                        'arrival_time': stop_time.get('arrival_time'),
+                        'departure_time': stop_time.get('departure_time')
+                    }
+                    
+                    # Ajouter l'arrêt suivant si disponible
+                    if i + 1 < len(stop_time_list):
+                        trip_info['next_stop_id'] = stop_time_list[i + 1].get('stop_id')
+                        trip_info['next_arrival_time'] = stop_time_list[i + 1].get('arrival_time')
+                    
+                    self.stop_to_trips_index[stop_id].append(trip_info)
+    
     def find_nearest_stop(self, lat, lon, max_distance=1000):
         """Trouve l'arrêt le plus proche d'une coordonnée donnée"""
         nearest_stop = None
@@ -176,18 +206,17 @@ class GTFSManager:
         return distance
     
     def get_trips_for_stop(self, stop_id):
-        """Récupère tous les trajets passant par un arrêt donné"""
-        trips = []
-        for trip_id, stop_time_list in self.stop_times.items():
-            for stop_time in stop_time_list:
-                if stop_time.get('stop_id') == stop_id:
-                    trips.append({
-                        'trip_id': trip_id,
-                        'arrival_time': stop_time.get('arrival_time'),
-                        'departure_time': stop_time.get('departure_time')
-                    })
-                    break
-        return trips
+        """Récupère tous les trajets passant par un arrêt donné (utilise l'index pour performance)"""
+        if stop_id in self.stop_to_trips_index:
+            trips = []
+            for trip_info in self.stop_to_trips_index[stop_id]:
+                trips.append({
+                    'trip_id': trip_info['trip_id'],
+                    'arrival_time': trip_info['arrival_time'],
+                    'departure_time': trip_info['departure_time']
+                })
+            return trips
+        return []
     
     def is_gtfs_loaded(self):
         """Vérifie si des données GTFS sont chargées"""
