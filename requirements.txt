@@ -12,7 +12,7 @@ kivy-garden.mapview==1.0.6
 requests==2.31.0
 
 # Pillow - Pour le traitement d'images
-Pillow==10.1.0
+Pillow==10.3.0
 
 # Standard library alternatives for Android compatibility
 # Ces modules sont généralement disponibles sur Android via python-for-android
