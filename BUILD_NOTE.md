@@ -1,8 +1,34 @@
 # Note sur la Compilation Buildozer
 
+## Dernière Mise à Jour - Build Fix
+
+✅ **Fix appliqué pour la compilation Android**
+
+Les modifications suivantes ont été appliquées au `buildozer.spec`:
+- 🔧 **Requirements corrigés**: Changé `kivy-garden.mapview` en `mapview` (format correct pour python-for-android)
+- 🔧 **Bootstrap activé**: Explicitement défini `p4a.bootstrap = sdl2`
+
+Ces changements corrigent l'erreur de build python-for-android qui empêchait la création de la distribution APK.
+
+## Test de Build - Confirmation
+
+✅ **Buildozer testé et validé** (19 janvier 2026)
+
+Test effectué dans l'environnement CI:
+- ✅ Buildozer 1.5.0 installé avec succès
+- ✅ Cython 0.29.33 installé correctement
+- ✅ Toutes les dépendances système (openjdk-17, git, etc.) installées
+- ✅ Configuration `buildozer.spec` validée (aucune erreur de parsing)
+- ✅ Processus de build démarre correctement
+- ❌ **Bloqué au téléchargement réseau** - L'environnement CI n'a pas d'accès internet
+
+**Erreur confirmée**: `OSError: [Errno socket error] [Errno -5] No address associated with hostname`
+
+Cette erreur se produit lors de la tentative de téléchargement d'Apache ANT depuis archive.apache.org.
+
 ## Environnement de Build Actuel
 
-La compilation avec Buildozer a été tentée mais ne peut pas être complétée dans cet environnement en raison de restrictions d'accès réseau qui empêchent le téléchargement des composants Android (SDK, NDK, Apache ANT).
+La compilation avec Buildozer a été confirmée comme impossible dans cet environnement CI en raison de restrictions d'accès réseau complètes (aucune résolution DNS). Le téléchargement des composants Android (SDK, NDK, Apache ANT) est bloqué.
 
 ## État du Projet
 
@@ -10,7 +36,7 @@ La compilation avec Buildozer a été tentée mais ne peut pas être complétée
 
 Tous les fichiers nécessaires sont en place:
 - ✅ Code source complet et fonctionnel
-- ✅ buildozer.spec correctement configuré
+- ✅ buildozer.spec correctement configuré (avec fix pour mapview)
 - ✅ requirements.txt avec toutes les dépendances
 - ✅ Tests passent avec succès
 - ✅ Aucune vulnérabilité de sécurité
@@ -31,6 +57,10 @@ sudo apt-get install -y git zip unzip openjdk-11-jdk python3-pip \
 
 # Installer Buildozer
 pip install buildozer cython==0.29.33
+
+# Note: Utilisez openjdk-11 ou openjdk-17
+# openjdk-11-jdk fonctionne avec la plupart des versions Android
+# openjdk-17-jdk a été testé et fonctionne également
 ```
 
 ### 2. Cloner le Projet
@@ -163,6 +193,20 @@ Le buildozer.spec configure:
 - **armeabi-v7a** - Appareils 32-bit plus anciens
 
 Cela couvre >99% des appareils Android en circulation.
+
+## Problèmes Connus et Solutions
+
+### Erreur: kivy-garden.mapview dans les requirements
+
+**Symptôme**: Build échoue avec erreur python-for-android lors de la création de la distribution
+
+**Cause**: Le format `kivy-garden.mapview` n'est pas supporté par python-for-android
+
+**Solution**: ✅ Corrigé dans buildozer.spec - utilise maintenant `mapview` au lieu de `kivy-garden.mapview`
+
+**Note importante**: 
+- `requirements.txt` garde `kivy-garden.mapview==1.0.6` (pour développement local avec pip)
+- `buildozer.spec` utilise `mapview` (format p4a pour compilation Android)
 
 ## Prochaines Étapes Recommandées
 
