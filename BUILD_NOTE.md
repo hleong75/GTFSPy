@@ -1,5 +1,15 @@
 # Note sur la Compilation Buildozer
 
+## Dernière Mise à Jour - Build Fix
+
+✅ **Fix appliqué pour la compilation Android**
+
+Les modifications suivantes ont été appliquées au `buildozer.spec`:
+- 🔧 **Requirements corrigés**: Changé `kivy-garden.mapview` en `mapview` (format correct pour python-for-android)
+- 🔧 **Bootstrap activé**: Explicitement défini `p4a.bootstrap = sdl2`
+
+Ces changements corrigent l'erreur de build python-for-android qui empêchait la création de la distribution APK.
+
 ## Environnement de Build Actuel
 
 La compilation avec Buildozer a été tentée mais ne peut pas être complétée dans cet environnement en raison de restrictions d'accès réseau qui empêchent le téléchargement des composants Android (SDK, NDK, Apache ANT).
@@ -10,7 +20,7 @@ La compilation avec Buildozer a été tentée mais ne peut pas être complétée
 
 Tous les fichiers nécessaires sont en place:
 - ✅ Code source complet et fonctionnel
-- ✅ buildozer.spec correctement configuré
+- ✅ buildozer.spec correctement configuré (avec fix pour mapview)
 - ✅ requirements.txt avec toutes les dépendances
 - ✅ Tests passent avec succès
 - ✅ Aucune vulnérabilité de sécurité
@@ -163,6 +173,20 @@ Le buildozer.spec configure:
 - **armeabi-v7a** - Appareils 32-bit plus anciens
 
 Cela couvre >99% des appareils Android en circulation.
+
+## Problèmes Connus et Solutions
+
+### Erreur: kivy-garden.mapview dans les requirements
+
+**Symptôme**: Build échoue avec erreur python-for-android lors de la création de la distribution
+
+**Cause**: Le format `kivy-garden.mapview` n'est pas supporté par python-for-android
+
+**Solution**: ✅ Corrigé dans buildozer.spec - utilise maintenant `mapview` au lieu de `kivy-garden.mapview`
+
+**Note importante**: 
+- `requirements.txt` garde `kivy-garden.mapview==1.0.6` (pour développement local avec pip)
+- `buildozer.spec` utilise `mapview` (format p4a pour compilation Android)
 
 ## Prochaines Étapes Recommandées
 
