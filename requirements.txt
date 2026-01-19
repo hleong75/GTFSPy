@@ -1,0 +1,18 @@
+# GTFSPy Requirements
+# Core dependencies for the GTFS routing application
+
+# Kivy - Framework pour applications mobiles
+kivy==2.2.1
+kivymd==1.1.1
+
+# MapView - Pour l'affichage de cartes
+kivy-garden.mapview==1.0.6
+
+# Requests - Pour les téléchargements HTTP
+requests==2.31.0
+
+# Pillow - Pour le traitement d'images
+Pillow==10.3.0
+
+# Standard library alternatives for Android compatibility
+# Ces modules sont généralement disponibles sur Android via python-for-android

@@ -1,0 +1,37 @@
+# Buildozer files
+.buildozer/
+bin/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Application data
+.gtfspy/
+
+# Sample data
+sample_gtfs.zip
+
+# Temporary files
+/tmp/
+*.tmp
+*.log
