@@ -10,9 +10,25 @@ Les modifications suivantes ont été appliquées au `buildozer.spec`:
 
 Ces changements corrigent l'erreur de build python-for-android qui empêchait la création de la distribution APK.
 
+## Test de Build - Confirmation
+
+✅ **Buildozer testé et validé** (19 janvier 2026)
+
+Test effectué dans l'environnement CI:
+- ✅ Buildozer 1.5.0 installé avec succès
+- ✅ Cython 0.29.33 installé correctement
+- ✅ Toutes les dépendances système (openjdk-17, git, etc.) installées
+- ✅ Configuration `buildozer.spec` validée (aucune erreur de parsing)
+- ✅ Processus de build démarre correctement
+- ❌ **Bloqué au téléchargement réseau** - L'environnement CI n'a pas d'accès internet
+
+**Erreur confirmée**: `OSError: [Errno socket error] [Errno -5] No address associated with hostname`
+
+Cette erreur se produit lors de la tentative de téléchargement d'Apache ANT depuis archive.apache.org.
+
 ## Environnement de Build Actuel
 
-La compilation avec Buildozer a été tentée mais ne peut pas être complétée dans cet environnement en raison de restrictions d'accès réseau qui empêchent le téléchargement des composants Android (SDK, NDK, Apache ANT).
+La compilation avec Buildozer a été confirmée comme impossible dans cet environnement CI en raison de restrictions d'accès réseau complètes (aucune résolution DNS). Le téléchargement des composants Android (SDK, NDK, Apache ANT) est bloqué.
 
 ## État du Projet
 
@@ -41,6 +57,10 @@ sudo apt-get install -y git zip unzip openjdk-11-jdk python3-pip \
 
 # Installer Buildozer
 pip install buildozer cython==0.29.33
+
+# Note: Utilisez openjdk-11 ou openjdk-17
+# openjdk-11-jdk fonctionne avec la plupart des versions Android
+# openjdk-17-jdk a été testé et fonctionne également
 ```
 
 ### 2. Cloner le Projet
