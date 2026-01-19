@@ -57,7 +57,10 @@ def prebuild_hook(ctx):
             check=True
         )
         
-        print(f"✓ Libtool version: {result.stdout.split()[3]}")
+        # Extract version (more robust parsing)
+        version_output = result.stdout.strip()
+        version_line = version_output.split('\n')[0] if version_output else "unknown"
+        print(f"✓ Libtool installed: {version_line}")
         print("=" * 70)
         print("Prebuild hook completed successfully")
         print("=" * 70)

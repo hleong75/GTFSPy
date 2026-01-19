@@ -33,8 +33,8 @@ class LibffiRecipe(Recipe):
         try:
             sh.which('libtool')
             print("libtool is already installed")
-        except sh.ErrorReturnCode:
-            print("Installing libtool...")
+        except (sh.ErrorReturnCode, sh.CommandNotFound, Exception) as e:
+            print(f"Installing libtool (check failed: {type(e).__name__})...")
             try:
                 shprint(sh.apt_get, 'update', _tail=10)
                 shprint(sh.apt_get, 'install', '-y', 'libtool', 'libtool-bin', 
@@ -47,7 +47,7 @@ class LibffiRecipe(Recipe):
     def build_arch(self, arch):
         env = self.get_recipe_env(arch)
         
-        with current_directory(self.get_build_dir(arch.arch)):
+        with current_directory(self.get_build_dir(arch)):
             # Configure
             configure = sh.Command('./configure')
             shprint(configure,
