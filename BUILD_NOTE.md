@@ -1,5 +1,37 @@
 # Note sur la Compilation Buildozer
 
+## 🔧 Corrections Récentes - libffi Build Fix (19 janvier 2026)
+
+✅ **Correction critique appliquée pour l'erreur libffi**
+
+### Problème Identifié
+Le log de compilation montrait une erreur lors du build de la bibliothèque libffi :
+```
+configure.ac:41: error: possibly undefined macro: AC_PROG_LIBTOOL
+configure:8578: error: possibly undefined macro: AC_PROG_LD
+```
+
+### Solutions Implémentées
+
+1. **Hook p4a personnalisé** (`p4a_hook.py`)
+   - Installe automatiquement libtool avant le build
+   - Vérifie la présence et la version de libtool
+   - Gère les erreurs gracieusement
+
+2. **Recette libffi personnalisée** (`p4a_recipes/libffi/__init__.py`)
+   - Utilise libffi 3.4.6 (version stable)
+   - Installe les dépendances nécessaires (libtool, automake, autoconf)
+   - Configure correctement pour Android
+
+3. **Configuration buildozer.spec**
+   - Activation du hook : `p4a.hook = p4a_hook.py`
+   - Activation des recettes locales : `p4a.local_recipes = p4a_recipes`
+   - Utilisation de la branche develop de p4a : `p4a.branch = develop`
+
+📄 **Documentation détaillée** : Voir [LOG_FIXES.md](LOG_FIXES.md) pour tous les détails
+
+---
+
 ## Dernière Mise à Jour - Build Fix
 
 ✅ **Fix appliqué pour la compilation Android**
