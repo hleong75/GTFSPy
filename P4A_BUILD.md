@@ -31,6 +31,13 @@ sudo apt-get install -y \
 
 ## Building the APK
 
+The build script automatically uses the `ANDROID_SDK_ROOT` and `ANDROID_NDK_HOME` environment variables if they are set. If not set, you need to set them:
+
+```bash
+export ANDROID_SDK_ROOT=/path/to/android-sdk
+export ANDROID_NDK_HOME=/path/to/android-ndk
+```
+
 ### Method 1: Using the build script (recommended)
 
 Simply run:
@@ -38,11 +45,14 @@ Simply run:
 ./build_apk.sh
 ```
 
-The APK will be created in the `dist/` directory.
+The script will automatically:
+- Detect Android SDK and NDK paths from environment variables
+- Pass the paths to p4a using `--sdk-dir` and `--ndk-dir` options
+- Create the APK in the `dist/` directory.
 
 ### Method 2: Using p4a directly
 
-Run p4a with the following command:
+Run p4a with the following command (make sure SDK and NDK paths are set):
 ```bash
 p4a apk \
     --name GTFSPy \
@@ -60,6 +70,8 @@ p4a apk \
     --local-recipes p4a_recipes \
     --hook p4a_hook.py \
     --private . \
+    --sdk-dir "$ANDROID_SDK_ROOT" \
+    --ndk-dir "$ANDROID_NDK_HOME" \
     --release
 ```
 
