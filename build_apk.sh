@@ -26,9 +26,6 @@ P4A_BRANCH="develop"
 BUILD_DIR="./.p4a_build"
 DIST_DIR="./dist"
 
-# Excluded patterns (files not to include in APK)
-EXCLUDE_PATTERNS="Log *.md test_core.py create_sample_data.py buildozer.spec"
-
 echo ""
 echo "Checking python-for-android installation..."
 if ! python3 -m pip show python-for-android > /dev/null 2>&1; then
@@ -47,7 +44,6 @@ echo "  NDK: $ANDROID_NDK"
 echo "  Architectures: $ARCHS"
 echo "  Bootstrap: $BOOTSTRAP"
 echo "  p4a Branch: $P4A_BRANCH"
-echo "  Excluded files: $EXCLUDE_PATTERNS"
 echo ""
 
 # Create build directory
@@ -136,7 +132,7 @@ done
 
 if [ -n "$APK_SOURCE" ] && [ -f "$APK_SOURCE" ]; then
     cp "$APK_SOURCE" "$DIST_DIR/"
-    echo "✓ APK copied to: $DIST_DIR/$(basename $APK_SOURCE)"
+    echo "✓ APK copied to: $DIST_DIR/$(basename "$APK_SOURCE")"
 else
     echo "ERROR: APK not found in build directories"
     echo "Searched in:"
@@ -150,7 +146,8 @@ echo ""
 echo "========================================================================"
 echo "Build complete!"
 echo "========================================================================"
-if [ -f "$DIST_DIR"/*.apk ]; then
+# Check if any APK files exist in dist directory
+if ls "$DIST_DIR"/*.apk 1> /dev/null 2>&1; then
     echo "✓ APK successfully created:"
     ls -lh "$DIST_DIR"/*.apk
 else
