@@ -22,6 +22,10 @@ ARCHS="arm64-v8a armeabi-v7a"
 BOOTSTRAP="sdl2"
 P4A_BRANCH="develop"
 
+# Android SDK and NDK paths (use environment variables if available)
+ANDROID_SDK="${ANDROID_SDK_ROOT:-${ANDROID_HOME}}"
+ANDROID_NDK_DIR="${ANDROID_NDK_HOME:-${ANDROID_NDK_ROOT}}"
+
 # Build directory
 BUILD_DIR="./.p4a_build"
 DIST_DIR="./dist"
@@ -44,6 +48,12 @@ echo "  NDK: $ANDROID_NDK"
 echo "  Architectures: $ARCHS"
 echo "  Bootstrap: $BOOTSTRAP"
 echo "  p4a Branch: $P4A_BRANCH"
+if [ -n "$ANDROID_SDK" ]; then
+    echo "  Android SDK: $ANDROID_SDK"
+fi
+if [ -n "$ANDROID_NDK_DIR" ]; then
+    echo "  Android NDK: $ANDROID_NDK_DIR"
+fi
 echo ""
 
 # Create build directory
@@ -85,24 +95,38 @@ echo "========================================================================"
 
 cd "$TEMP_SOURCE"
 
-p4a apk \
-    --name "$APP_NAME" \
-    --package "$PACKAGE_NAME" \
-    --version "$VERSION" \
-    --requirements "$REQUIREMENTS" \
-    --permission "$PERMISSIONS" \
-    --orientation "$ORIENTATION" \
-    --android-api "$ANDROID_API" \
-    --ndk-api "$ANDROID_MIN_API" \
-    --ndk-version "$ANDROID_NDK" \
+# Build p4a command with SDK/NDK paths if available
+P4A_CMD="p4a apk \
+    --name \"$APP_NAME\" \
+    --package \"$PACKAGE_NAME\" \
+    --version \"$VERSION\" \
+    --requirements \"$REQUIREMENTS\" \
+    --permission \"$PERMISSIONS\" \
+    --orientation \"$ORIENTATION\" \
+    --android-api \"$ANDROID_API\" \
+    --ndk-api \"$ANDROID_MIN_API\" \
+    --ndk-version \"$ANDROID_NDK\" \
     --arch arm64-v8a \
     --arch armeabi-v7a \
-    --bootstrap "$BOOTSTRAP" \
+    --bootstrap \"$BOOTSTRAP\" \
     --release \
-    --local-recipes "p4a_recipes" \
-    --hook "p4a_hook.py" \
+    --local-recipes \"p4a_recipes\" \
+    --hook \"p4a_hook.py\" \
     --private . \
-    --storage-dir "$BUILD_DIR/p4a-storage"
+    --storage-dir \"$BUILD_DIR/p4a-storage\""
+
+# Add SDK directory if available
+if [ -n "$ANDROID_SDK" ]; then
+    P4A_CMD="$P4A_CMD --sdk-dir \"$ANDROID_SDK\""
+fi
+
+# Add NDK directory if available
+if [ -n "$ANDROID_NDK_DIR" ]; then
+    P4A_CMD="$P4A_CMD --ndk-dir \"$ANDROID_NDK_DIR\""
+fi
+
+# Execute the p4a command
+eval $P4A_CMD
 
 BUILD_EXIT_CODE=$?
 cd ../..
