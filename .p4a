@@ -1,0 +1,39 @@
+# Python-for-Android configuration file
+# This file configures p4a to build the GTFSPy Android APK
+
+[app]
+# Application metadata
+title = GTFSPy
+package.name = gtfspy
+package.domain = org.gtfspy
+version = 1.0.0
+
+# Source configuration
+source.dir = .
+source.include_exts = py,png,jpg,kv,atlas
+
+# Exclude unnecessary files from the APK
+source.exclude_dirs = .git,.buildozer
+source.exclude_patterns = Log,*.md,test_core.py,create_sample_data.py,buildozer.spec
+
+# Application requirements
+requirements = python3,kivy,kivymd,mapview,requests,pillow
+
+# Permissions
+permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
+
+# Orientation
+orientation = portrait
+
+# Android configuration
+android.api = 33
+android.minapi = 21
+android.ndk = 25b
+android.accept_sdk_license = True
+android.archs = arm64-v8a,armeabi-v7a
+
+# p4a configuration
+p4a.bootstrap = sdl2
+p4a.branch = develop
+p4a.local_recipes = p4a_recipes
+p4a.hook = p4a_hook.py
