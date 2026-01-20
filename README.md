@@ -35,7 +35,9 @@ pip install -r requirements.txt
 
 ### Compilation pour Android
 
-**Note importante** : Des corrections ont été appliquées pour résoudre l'erreur libffi (AC_PROG_LIBTOOL). Voir [LOG_FIXES.md](LOG_FIXES.md) pour les détails.
+**Notes importantes** : 
+- Des corrections ont été appliquées pour résoudre l'erreur libffi (AC_PROG_LIBTOOL). Voir [LOG_FIXES.md](LOG_FIXES.md) pour les détails.
+- L'erreur `aidl` manquante avec build-tools 36.x a été corrigée en spécifiant la version 35.0.1 dans buildozer.spec. Voir [BUILD_NOTE.md](BUILD_NOTE.md) pour plus de détails.
 
 Sur Ubuntu/Debian, installez d'abord les dépendances système :
 
