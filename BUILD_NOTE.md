@@ -1,5 +1,32 @@
 # Note sur la Compilation Buildozer
 
+## 🔧 Corrections Récentes - Android Build-Tools AIDL Fix (20 janvier 2026)
+
+✅ **Correction critique appliquée pour l'erreur aidl manquante**
+
+### Problème Identifié
+Buildozer tentait d'utiliser Android build-tools version 36.1.0, qui ne contient pas le binaire `aidl` requis :
+```
+FileNotFoundError: [Errno 2] No such file or directory: 
+'/root/.buildozer/android/platform/android-sdk/build-tools/36.1.0/aidl'
+```
+
+### Cause
+Les versions 36.x d'Android build-tools ont supprimé le binaire `aidl` traditionnel, causant l'échec de la compilation buildozer qui dépend de cet outil.
+
+### Solution Implémentée
+
+**Configuration buildozer.spec** (ligne 44-46)
+```ini
+# (str) Android build-tools version to use
+# Note: build-tools 36.x removed the aidl binary, use 35.0.1 for compatibility
+android.build_tools_version = 35.0.1
+```
+
+Cette modification force buildozer à utiliser la version 35.0.1 des build-tools, qui est la dernière version stable contenant le binaire `aidl` requis.
+
+---
+
 ## 🔧 Corrections Récentes - libffi Build Fix (19 janvier 2026)
 
 ✅ **Correction critique appliquée pour l'erreur libffi**
