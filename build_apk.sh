@@ -79,6 +79,10 @@ rsync -av \
 echo "Source files prepared in $TEMP_SOURCE"
 echo ""
 
+# Copy p4a configuration files to temp source
+cp -v p4a_hook.py "$TEMP_SOURCE/"
+cp -rv p4a_recipes "$TEMP_SOURCE/"
+
 # Build APK with p4a
 echo "Building APK with p4a..."
 echo "========================================================================"
@@ -104,23 +108,52 @@ p4a apk \
     --private . \
     --storage-dir "$BUILD_DIR/p4a-storage"
 
+BUILD_EXIT_CODE=$?
 cd ../..
 
 # Copy APK to dist directory
 echo ""
 echo "========================================================================"
+if [ $BUILD_EXIT_CODE -ne 0 ]; then
+    echo "ERROR: Build failed with exit code $BUILD_EXIT_CODE"
+    exit $BUILD_EXIT_CODE
+fi
+
 echo "Copying APK to dist directory..."
-APK_SOURCE=$(find "$BUILD_DIR" -name "*.apk" | head -1)
-if [ -n "$APK_SOURCE" ]; then
+
+# Look for APK in known p4a output locations
+APK_SOURCE=""
+for location in \
+    "$BUILD_DIR/source" \
+    "$BUILD_DIR/p4a-storage" \
+    "$TEMP_SOURCE"; do
+    APK_FOUND=$(find "$location" -name "*.apk" 2>/dev/null | head -1)
+    if [ -n "$APK_FOUND" ]; then
+        APK_SOURCE="$APK_FOUND"
+        break
+    fi
+done
+
+if [ -n "$APK_SOURCE" ] && [ -f "$APK_SOURCE" ]; then
     cp "$APK_SOURCE" "$DIST_DIR/"
-    echo "APK copied to: $DIST_DIR/$(basename $APK_SOURCE)"
+    echo "✓ APK copied to: $DIST_DIR/$(basename $APK_SOURCE)"
 else
-    echo "Warning: APK not found in build directory"
+    echo "ERROR: APK not found in build directories"
+    echo "Searched in:"
+    echo "  - $BUILD_DIR/source"
+    echo "  - $BUILD_DIR/p4a-storage"
+    echo "  - $TEMP_SOURCE"
+    exit 1
 fi
 
 echo ""
 echo "========================================================================"
 echo "Build complete!"
 echo "========================================================================"
-echo "APK location: $DIST_DIR/"
-ls -lh "$DIST_DIR"/*.apk 2>/dev/null || echo "No APK found"
+if [ -f "$DIST_DIR"/*.apk ]; then
+    echo "✓ APK successfully created:"
+    ls -lh "$DIST_DIR"/*.apk
+else
+    echo "ERROR: Build completed but no APK was created"
+    exit 1
+fi

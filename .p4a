@@ -11,10 +11,8 @@ version = 1.0.0
 # Source configuration
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
-source.include_patterns = 
 
 # Exclude unnecessary files from the APK
-source.exclude_exts = 
 source.exclude_dirs = .git,.buildozer
 source.exclude_patterns = Log,*.md,test_core.py,create_sample_data.py,buildozer.spec
 
