@@ -35,6 +35,19 @@ pip install -r requirements.txt
 
 ### Compilation pour Android
 
+**Note importante** : Des corrections ont été appliquées pour résoudre l'erreur libffi (AC_PROG_LIBTOOL). Voir [LOG_FIXES.md](LOG_FIXES.md) pour les détails.
+
+Sur Ubuntu/Debian, installez d'abord les dépendances système :
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git zip unzip openjdk-17-jdk \
+    libtool libtool-bin automake autoconf \
+    zlib1g-dev libffi-dev libssl-dev cmake
+```
+
+Puis compilez l'application :
+
 ```bash
 buildozer android debug
 ```
