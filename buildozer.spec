@@ -15,6 +15,9 @@ source.dir = .
 # (list) Source files to include (let empty to include all the files)
 source.include_exts = py,png,jpg,kv,atlas,txt,csv,zip,json
 
+# (list) List of exclusions using pattern matching
+source.exclude_patterns = Log,*.md,ARCHITECTURE.md,BUILDOZER_TEST_RESULTS.md,BUILD_NOTE.md,CORRECTIONS_LOG.md,FINAL_REPORT.md,INSTALLATION.md,LOG_FIXES.md,LOG_FIXES_SUMMARY.md,QUICKSTART.md,SECURITY.md,SUMMARY.md,TACHE_TERMINEE.md,test_core.py,create_sample_data.py
+
 # (str) Application versioning (method 1)
 version = 1.0.0
 
