@@ -23,7 +23,7 @@ BOOTSTRAP="sdl2"
 P4A_BRANCH="develop"
 
 # Android SDK and NDK paths (use environment variables if available)
-ANDROID_SDK="${ANDROID_SDK_ROOT:-${ANDROID_HOME}}"
+ANDROID_SDK_DIR="${ANDROID_SDK_ROOT:-${ANDROID_HOME}}"
 ANDROID_NDK_DIR="${ANDROID_NDK_HOME:-${ANDROID_NDK_ROOT}}"
 
 # Build directory
@@ -48,8 +48,8 @@ echo "  NDK: $ANDROID_NDK"
 echo "  Architectures: $ARCHS"
 echo "  Bootstrap: $BOOTSTRAP"
 echo "  p4a Branch: $P4A_BRANCH"
-if [ -n "$ANDROID_SDK" ]; then
-    echo "  Android SDK: $ANDROID_SDK"
+if [ -n "$ANDROID_SDK_DIR" ]; then
+    echo "  Android SDK: $ANDROID_SDK_DIR"
 fi
 if [ -n "$ANDROID_NDK_DIR" ]; then
     echo "  Android NDK: $ANDROID_NDK_DIR"
@@ -118,8 +118,8 @@ P4A_ARGS=(
 )
 
 # Add SDK directory if available
-if [ -n "$ANDROID_SDK" ]; then
-    P4A_ARGS+=(--sdk-dir "$ANDROID_SDK")
+if [ -n "$ANDROID_SDK_DIR" ]; then
+    P4A_ARGS+=(--sdk-dir "$ANDROID_SDK_DIR")
 fi
 
 # Add NDK directory if available
