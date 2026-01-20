@@ -2,6 +2,11 @@
 .buildozer/
 bin/
 
+# Python-for-Android (p4a) build files
+.p4a_build/
+dist/
+*.apk
+
 # Python cache
 __pycache__/
 *.pyc
